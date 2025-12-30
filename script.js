@@ -1,25 +1,76 @@
-let orders = [];
-let editIndex = null;
+/* TAB */
+function showTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));
+  document.getElementById(tab).classList.remove('hidden');
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
 
-function addOrder() {
-  const p = person.value;
-  const pr = Number(price.value);
+/* ================= ITINERARY ================= */
+let temp = [];
+let itinerary = [];
 
-  if (editIndex !== null) {
-    orders[editIndex] = { person:p, price:pr };
-    editIndex = null;
-  } else {
-    orders.push({ person:p, price:pr });
-  }
+function addTemp(){
+  temp.push({
+    day:day.value,
+    time:time.value,
+    place:place.value,
+    map:map.value
+  });
+  renderTemp();
+}
 
-  price.value = "";
+function renderTemp(){
+  tempList.innerHTML = temp.map((i,idx)=>`
+    <div class="item">
+      ${i.time} - ${i.place}
+      <a href="${i.map}" target="_blank">📍</a>
+      <button onclick="removeTemp(${idx})">Remove</button>
+    </div>
+  `).join('');
+}
+
+function removeTemp(i){
+  temp.splice(i,1);
+  renderTemp();
+}
+
+function saveDay(){
+  itinerary.push(...temp);
+  temp=[];
+  renderTemp();
+  renderItinerary();
+}
+
+function renderItinerary(){
+  itineraryList.innerHTML = itinerary.map(i=>`
+    <div class="item">
+      <strong>${i.day}</strong><br>
+      ${i.time} - ${i.place}
+      <a href="${i.map}" target="_blank">Maps</a>
+    </div>
+  `).join('');
+}
+
+/* ================= SPLIT BILL ================= */
+let orders=[];
+let editIndex=null;
+let rate=0.15;
+
+function addOrder(){
+  const obj={person:person.value,price:Number(price.value)};
+  if(editIndex!==null){
+    orders[editIndex]=obj;
+    editIndex=null;
+  }else orders.push(obj);
+  price.value='';
   renderOrders();
 }
 
-function renderOrders() {
-  orderList.innerHTML = orders.map((o,i)=>`
-    <div class="order">
-      <div>${o.person} — ${o.price}</div>
+function renderOrders(){
+  orderList.innerHTML=orders.map((o,i)=>`
+    <div class="item order">
+      ${o.person} - ${o.price}
       <div class="actions">
         <button onclick="editOrder(${i})">Edit</button>
         <button class="delete" onclick="deleteOrder(${i})">Del</button>
@@ -28,43 +79,45 @@ function renderOrders() {
   `).join('');
 }
 
-function editOrder(i) {
-  person.value = orders[i].person;
-  price.value = orders[i].price;
-  editIndex = i;
+function editOrder(i){
+  person.value=orders[i].person;
+  price.value=orders[i].price;
+  editIndex=i;
 }
 
-function deleteOrder(i) {
+function deleteOrder(i){
   orders.splice(i,1);
   renderOrders();
 }
 
-function calculate() {
-  let spent = {A:0,B:0,C:0,D:0};
+function calculate(){
+  let spent={A:0,B:0,C:0,D:0};
   orders.forEach(o=>spent[o.person]+=o.price);
 
-  let payerName = payer.value;
-  let res = `<strong>Total Spend</strong><br>`;
-  Object.keys(spent).forEach(p=>{
-    res+=`${p}: ${spent[p]}<br>`;
-  });
+  let payerName=payer.value;
+  let html='<strong>Total Spend</strong><br>';
+  Object.keys(spent).forEach(p=>html+=`${p}: ${spent[p]}<br>`);
 
-  res+=`<hr>`;
+  html+='<hr>';
   Object.keys(spent).forEach(p=>{
     if(p!==payerName && spent[p]>0){
-      res+=`${p} owes ${payerName}: ${spent[p]}<br>`;
+      html+=`${p} owes ${payerName}: ${spent[p]}<br>`;
     }
   });
+  result.innerHTML=html;
+}
 
-  result.innerHTML = res;
+function convertCurrency(){
+  if(currency.value==='TRY') paid.value=(paid.value/rate).toFixed(2);
+  else paid.value=(paid.value*rate).toFixed(2);
 }
 
 /* EXPORT */
 function exportPDF(){
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
+  const {jsPDF}=window.jspdf;
+  const pdf=new jsPDF();
   pdf.text(result.innerText,10,10);
-  pdf.save("split-bill.pdf");
+  pdf.save("trip-summary.pdf");
 }
 
 function exportWhatsApp(){
