@@ -1,108 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Turkey Trip Planner</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Turkey Trip Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<header>🇹🇷 Turkey Trip Planner</header>
+<header>
+  🇹🇷 Turkey Trip Planner
+</header>
 
-<nav class="tabs">
-  <button onclick="showTab('itinerary')" class="active">Itinerary</button>
-  <button onclick="showTab('bill')">Split Bill</button>
-</nav>
+<div class="container">
 
-<main>
-
-<!-- ================= ITINERARY ================= -->
-<section id="itinerary" class="tab">
-
-  <div class="card">
-    <label>Day</label>
-    <select id="day">
-      <option>Day 1</option><option>Day 2</option><option>Day 3</option>
-      <option>Day 4</option><option>Day 5</option><option>Day 6</option><option>Day 7</option>
-    </select>
-
-    <label>Time</label>
-    <input type="time" id="time">
-
-    <label>Place</label>
-    <input id="place" placeholder="Hagia Sophia">
-
-    <label>Google Maps Link</label>
-    <input id="map" placeholder="https://maps.google.com/...">
-
-    <button class="primary" onclick="addTemp()">Add Activity</button>
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('itinerary')">Itinerary</button>
+    <button class="tab" onclick="switchTab('bill')">Split Bill</button>
   </div>
 
-  <div class="card">
-    <h3>Activities (Before Save)</h3>
-    <div id="tempList"></div>
-    <button onclick="saveDay()">Save Day</button>
-  </div>
+  <!-- ================= ITINERARY ================= -->
+  <section id="itinerary" class="tab-content">
 
-  <div class="card">
-    <h3>Full Itinerary</h3>
-    <div id="itineraryList"></div>
-  </div>
+    <div class="card">
+      <h2>Add Activity</h2>
 
-</section>
+      <label>Day</label>
+      <select id="day">
+        <option>Day 1</option><option>Day 2</option><option>Day 3</option>
+        <option>Day 4</option><option>Day 5</option><option>Day 6</option><option>Day 7</option>
+      </select>
 
-<!-- ================= SPLIT BILL ================= -->
-<section id="bill" class="tab hidden">
+      <label>Time</label>
+      <input type="time" id="time">
 
-  <div class="card">
-    <label>Payer</label>
-    <select id="payer">
-      <option>A</option><option>B</option><option>C</option><option>D</option>
-    </select>
+      <label>Place</label>
+      <input id="place" placeholder="Hagia Sophia">
 
-    <label>Total Paid</label>
-    <input type="number" id="paid" placeholder="50">
+      <label>Google Maps Link</label>
+      <input id="map" placeholder="https://maps.google.com/...">
 
-    <label>Currency</label>
-    <select id="currency" onchange="convertCurrency()">
-      <option value="MYR">MYR</option>
-      <option value="TRY">TRY</option>
-    </select>
-  </div>
+      <button class="primary" onclick="addActivity()">Add</button>
+    </div>
 
-  <div class="card">
-    <h3>Add Order</h3>
-    <div class="row">
-      <select id="person">
+    <div class="card">
+      <h2>Itinerary List</h2>
+      <div id="itineraryList"></div>
+    </div>
+
+  </section>
+
+  <!-- ================= SPLIT BILL ================= -->
+  <section id="bill" class="tab-content hidden">
+
+    <div class="card">
+      <h2>Payment Info</h2>
+
+      <label>Who Paid</label>
+      <select id="payer">
         <option>A</option><option>B</option><option>C</option><option>D</option>
       </select>
-      <input type="number" id="price" placeholder="10">
+
+      <label>Total Paid</label>
+      <input type="number" id="paid" placeholder="50">
+
+      <label>Currency</label>
+      <select id="currency">
+        <option value="MYR">MYR</option>
+        <option value="TRY">TRY</option>
+      </select>
     </div>
-    <button class="primary" onclick="addOrder()">Add Item</button>
-  </div>
 
-  <div class="card">
-    <h3>Orders</h3>
-    <div id="orderList"></div>
-  </div>
+    <div class="card">
+      <h2>Add Order (Item-Based)</h2>
 
-  <div class="card">
-    <button class="primary" onclick="calculate()">Calculate</button>
-    <button onclick="exportPDF()">Export PDF</button>
-    <button onclick="exportWhatsApp()">WhatsApp</button>
-  </div>
+      <div class="row">
+        <select id="person">
+          <option>A</option><option>B</option><option>C</option><option>D</option>
+        </select>
+        <input type="number" id="price" placeholder="10">
+      </div>
 
-  <div class="card">
-    <h3>Result</h3>
-    <div id="result"></div>
-  </div>
+      <button class="primary" onclick="addOrder()">Add Item</button>
+    </div>
 
-</section>
+    <div class="card">
+      <h2>Orders</h2>
+      <div id="orderList"></div>
+    </div>
 
-</main>
+    <div class="card">
+      <button class="primary" onclick="calculateBill()">Calculate</button>
+    </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="script.js"></script>
+    <div class="card">
+      <h2>Result</h2>
+      <div id="result"></div>
+    </div>
+
+  </section>
+
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
